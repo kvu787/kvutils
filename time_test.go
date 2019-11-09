@@ -1,4 +1,4 @@
-package kvutils
+package util
 
 import (
 	"testing"
