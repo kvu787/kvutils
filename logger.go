@@ -7,19 +7,19 @@ import (
 	"sync"
 )
 
-type Options struct {
+type LoggerOptions struct {
 	UseStdout         bool
 	FilePath          string
 	AdditionalWriters []io.Writer
 }
 
 // Logger can be used concurrently.
-func NewLogger(options Options) (*log.Logger, error) {
-	writers := make([]io.Writer, len(options.AdditionalWriters))
-	copy(writers, options.AdditionalWriters)
+func NewLogger(loggerOptions LoggerOptions) (*log.Logger, error) {
+	writers := make([]io.Writer, len(loggerOptions.AdditionalWriters))
+	copy(writers, loggerOptions.AdditionalWriters)
 
-	if options.FilePath != "" {
-		file, err := os.Create(options.FilePath)
+	if loggerOptions.FilePath != "" {
+		file, err := os.Create(loggerOptions.FilePath)
 		if err != nil {
 			return nil, err
 		}
@@ -27,14 +27,14 @@ func NewLogger(options Options) (*log.Logger, error) {
 		if err != nil {
 			return nil, err
 		}
-		file, err = os.OpenFile(options.FilePath, os.O_WRONLY, 0)
+		file, err = os.OpenFile(loggerOptions.FilePath, os.O_WRONLY, 0)
 		if err != nil {
 			return nil, err
 		}
 		writers = append(writers, file)
 	}
 
-	if options.UseStdout {
+	if loggerOptions.UseStdout {
 		writers = append(writers, os.Stdout)
 	}
 

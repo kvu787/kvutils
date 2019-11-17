@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-var DefaultOptions Options = Options{true, "test.log", nil}
+var DefaultOptions LoggerOptions = LoggerOptions{true, "test.log", nil}
 
 func TestLog(t *testing.T) {
 	logger, err := NewLogger(DefaultOptions)
