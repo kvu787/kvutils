@@ -13,7 +13,10 @@ import (
 	"github.com/rs/cors"
 )
 
-var upgrader = websocket.Upgrader{} // use default options
+var upgrader = websocket.Upgrader{
+	// Allow any origin
+	CheckOrigin: func(request *http.Request) bool { return true },
+}
 
 type JsonRequest struct {
 	Json     interface{}
