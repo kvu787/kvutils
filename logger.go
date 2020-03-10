@@ -1,10 +1,12 @@
 package util
 
 import (
+	"fmt"
 	"io"
 	"log"
 	"os"
 	"sync"
+	"time"
 )
 
 type LoggerOptions struct {
@@ -13,6 +15,12 @@ type LoggerOptions struct {
 	AdditionalWriters []io.Writer
 }
 
+func NewDefaultLogger() (*log.Logger, error) {
+	name := fmt.Sprintf("default_log_%v.txt", time.Now().Unix())
+	return NewLogger(LoggerOptions{true, name, []io.Writer{}})
+}
+
+// TODO: avoid overwriting existing log files
 // Logger can be used concurrently.
 func NewLogger(loggerOptions LoggerOptions) (*log.Logger, error) {
 	writers := make([]io.Writer, len(loggerOptions.AdditionalWriters))

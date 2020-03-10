@@ -15,6 +15,14 @@ func TestLog(t *testing.T) {
 	logger.Println("here")
 }
 
+func TestDefaultLogger(t *testing.T) {
+	logger, err := NewDefaultLogger()
+	if err != nil {
+		t.Fatal(err)
+	}
+	logger.Println("here")
+}
+
 func TestLogConcurrent(t *testing.T) {
 	logger, err := NewLogger(DefaultOptions)
 	if err != nil {

@@ -3,6 +3,7 @@ package util
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -55,11 +56,15 @@ func PostJson(host string, port uint, object interface{}) (*http.Response, error
 }
 
 // Starts one goroutine to listen for requests.
-// Starts one goroutine to handle each request. Exits when Complete is called.
+// Starts a goroutine to handle each request. Exits when Complete is called.
 //
 // You can receive requests concurrently.
 // You can complete requests concurrently and in any order.
-func Listen(port uint, logger *log.Logger) chan JsonRequest {
+func StartServer(port uint, logger *log.Logger) (chan JsonRequest, error) {
+	if logger == nil {
+		return nil, errors.New("logger must not be nil")
+	}
+
 	requests := make(chan JsonRequest)
 
 	go func() {
@@ -72,7 +77,7 @@ func Listen(port uint, logger *log.Logger) chan JsonRequest {
 
 			contentType := request.Header.Get("Content-Type")
 			if contentType != "application/json; charset=UTF-8" {
-				logger.Print("Content-Type header must be 'application/json; charset=UTF-8', got %v, contentType")
+				logger.Printf("Content-Type header must be 'application/json; charset=UTF-8', but got %v", contentType)
 				return
 			}
 
@@ -103,7 +108,7 @@ func Listen(port uint, logger *log.Logger) chan JsonRequest {
 		close(requests)
 	}()
 
-	return requests
+	return requests, nil
 }
 
 type WebSocket struct {
