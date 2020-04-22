@@ -1,10 +1,12 @@
 package util
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"log"
 	"os"
+	"path/filepath"
 	"sync"
 	"time"
 )
@@ -27,10 +29,22 @@ func NewLogger(loggerOptions LoggerOptions) (*log.Logger, error) {
 	copy(writers, loggerOptions.AdditionalWriters)
 
 	if loggerOptions.FilePath != "" {
+		doesFileExist, err := DoesFileExist(loggerOptions.FilePath)
+		if err != nil {
+			return nil, err
+		}
+		if doesFileExist {
+			absoluteFilePath, err := filepath.Abs(loggerOptions.FilePath)
+			if err != nil {
+				return nil, err
+			}
+			return nil, errors.New(fmt.Sprintf("File already exists at %v", absoluteFilePath))
+		}
 		file, err := os.Create(loggerOptions.FilePath)
 		if err != nil {
 			return nil, err
 		}
+		// Close, so we can reopen as write-only
 		err = file.Close()
 		if err != nil {
 			return nil, err
