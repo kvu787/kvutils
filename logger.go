@@ -17,9 +17,13 @@ type LoggerOptions struct {
 	AdditionalWriters []io.Writer
 }
 
-func NewDefaultLogger() (*log.Logger, error) {
-	name := fmt.Sprintf("default_log_%v.txt", time.Now().Unix())
+func NewPrefixLogger(prefix string) (*log.Logger, error) {
+	name := fmt.Sprintf("%v_log_%v.txt", prefix, time.Now().Unix())
 	return NewLogger(LoggerOptions{true, name, []io.Writer{}})
+}
+
+func NewDefaultLogger() (*log.Logger, error) {
+	return NewPrefixLogger("default")
 }
 
 // Logger can be used concurrently.
