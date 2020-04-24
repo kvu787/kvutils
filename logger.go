@@ -22,7 +22,6 @@ func NewDefaultLogger() (*log.Logger, error) {
 	return NewLogger(LoggerOptions{true, name, []io.Writer{}})
 }
 
-// TODO: avoid overwriting existing log files
 // Logger can be used concurrently.
 func NewLogger(loggerOptions LoggerOptions) (*log.Logger, error) {
 	writers := make([]io.Writer, len(loggerOptions.AdditionalWriters))
